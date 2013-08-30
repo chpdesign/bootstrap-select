@@ -302,8 +302,12 @@
                     } else {
                         minHeight = 0;
                     }
-                    menu.css({'max-height' : menuHeight + 'px', 'overflow' : 'hidden', 'min-height' : minHeight + 'px'});
-                    menuInner.css({'max-height' : menuHeight - headerHeight- menuPadding + 'px', 'overflow-y' : 'auto', 'min-height' : minHeight - menuPadding + 'px'});
+                    //why min max height if it has auto height?
+                    //menu.css({'max-height' : menuHeight + 'px', 'overflow' : 'hidden', 'min-height' : minHeight + 'px'});
+                    menu.css({'overflow' : 'hidden', 'max-height' : '', 'min-height': ''});
+                    //why again?
+                    //menuInner.css({'max-height' : menuHeight - headerHeight- menuPadding + 'px', 'overflow-y' : 'auto', 'min-height' : minHeight - menuPadding + 'px'});
+                    menuInner.css({'overflow-y' : 'auto', 'max-height' : '', 'min-height': ''});
                 }
                 getSize();
                 $(window).resize(getSize);
@@ -451,6 +455,28 @@
 
                 e.preventDefault();
 
+                //Modal box feature
+                if (!_this.isDisabled() && !$(this).parent().hasClass('disabled')) {
+                	var $options = _this.$element.find('option');
+                    var $option = $options.eq(clickedIndex);
+                    
+                    var box = $option.data('modal');
+                    var boxoptions = $option.data('modal-options');
+                    if (typeof(box) != 'undefined') {
+                    	
+                    	//to the string for check
+                    	try{ boxoptions = JSON.stringify(boxoptions); }catch(e){}
+                    	
+                    	//check if parsable data
+                    	var parsable = false;
+                    	try{ boxoptions = JSON.parse(boxoptions); parsable = true; }
+                    	catch(e){ parsable = false; }
+                    	
+                    	if(typeof(boxoptions) == 'undefined' || (typeof(boxoptions) != 'undefined' && (!parsable || boxoptions == ''))) boxoptions = {};
+                    	$(box).modal(boxoptions);
+                    	return;
+                    }
+                }
                 //Dont run if we have been disabled
                 if (!_this.isDisabled() && !$(this).parent().hasClass('disabled')) {
                     var $options = _this.$element.find('option');
